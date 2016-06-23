@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-
-
+from __future__ import print_function
 
 """
 
 
 
+"""
 
 import serial
+
 
 def findPorts():
     import sys
@@ -33,55 +33,66 @@ def findPorts():
             pass
     return result
 
+
 class Arduino():
-    def __init__(self,Port='/dev/ttyUSB0',Boud=9600,connState=0):
-        self.parent=self
-        self.port=Port
-        self.boud=Boud
-        self.connState=connState
-        self.timeount=1
-        self.ser=None
-        #self.connect()
-    
+    def __init__(self, Port='/dev/ttyUSB0', Boud=9600, connState=0):
+        # type: (self, basestring, int) -> None
+        """
+
+        :rtype: object
+        """
+        self.parent = self
+        self.port = Port
+        self.boud = Boud
+        self.connState = connState
+        self.timeount = 1
+        self.ser = None
+        self.connect()
 
     def connect(self):
+        # noinspection PyBroadException
         try:
-            self.ser=serial.Serial(self.port,self.boud,timeout=0.0001)
-            self.ser.open()
-            self.connState=1
-            print "Successfully connected to port %r." % self.port
-            return [1,'connected']
+            self.ser = serial.Serial(self.port, self.boud, timeout=0.0001)
+            # self.ser.open()
+            self.connState = 1
+            print("Successfully connected to port %r." % self.port)
+            return [1, 'connected']
         except:
-            self.connState=0
-            print 'no hardware found'
-            return [0,'no hardware found']
+            self.connState = 0
+            print('no hardware found')
+            return [0, 'no hardware found']
 
     def disconnect(self):
-        if (self.connState == 1):
+        if self.connState == 1:
             self.ser.close()
+
     def isConnected(self):
-    #Is the computer connected with the Serial Port?
+        # Is the computer connected with the Serial Port?
         try:
             return self.connState
         except:
             return False
 
-    def loadData(self):     
-        self.buffer=self.ser.readline()        
-        if (self.buffer!=''):
+    def loadData(self):
+        buffer = self.ser.readline()
+        if buffer != '':
             try:
-                print self.buffer
-            except Exception, e:
+                print(buffer)
+            except Exception as e:
                 pass
+
     def sendData(self, command):
         try:
             self.ser.write(command)
-        except Exception, e :
-            print 'Error sending message "%s" to Arduino:\n%s' % (command, e)
-#ard=Arduino(Boud=38400)
-#while True:
-#    if ard.connState:
-#        ard.loadData()
-#    else:
-#        print "Arduino not found"
- #       break
+        except Exception as e:
+            print('Error sending message "%s" to Arduino:\n%s' % (command, e))
+
+
+
+            # ard=Arduino(Boud=38400)
+            # while True:
+            #    if ard.connState:
+            #        ard.loadData()
+            #    else:
+            #        print "Arduino not found"
+            #       break
